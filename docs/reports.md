@@ -20,7 +20,9 @@ Each finding shows the rule ID, severity, confidence, location, message, a sugge
 
 ## JSON report
 
-Run `sorobanshield scan . --format json`. Key order is fixed and the output is deterministic for the same input.
+Run `sorobanshield scan . --format json`. Key order is fixed and the output is deterministic for the same input. The machine-readable [JSON Schema for version 1](report.schema.json) is validated against real fixture output in CI with `scripts/check-json-report.sh`.
+
+Every field emitted by the current CLI is required in the v1 schema. The schema intentionally permits additional properties at every object level so that compatible, additive fields can be introduced without a major schema version bump; consumers should ignore unknown properties.
 
 | Field | Type | Notes |
 | --- | --- | --- |
@@ -37,6 +39,10 @@ Run `sorobanshield scan . --format json`. Key order is fixed and the output is d
 | `scan.disabled_rules` | string[] | Rules disabled by configuration. |
 | `scan.errors` | object[] | `{ file, message }` for files that could not be read or parsed. |
 | `summary.total` | number | Number of findings. |
+| `summary.suppressed_by_baseline` | integer | Findings hidden by the baseline. |
+| `summary.suppressed_by_comment` | integer | Findings hidden by inline comments. |
+| `suppressions` | object[] | Hidden findings (`rule_id`, `file`, `line`, nullable `reason`). |
+| `unused_suppressions` | object[] | Unmatched directives (`rule_id`, `file`, `line`). |
 | `summary.by_severity` | object | Counts for `critical`, `high`, `info`, `low`, `medium`. |
 | `findings` | object[] | Sorted by file, line, rule ID. |
 | `disclaimer` | string | Reminder that static analysis cannot prove security. |

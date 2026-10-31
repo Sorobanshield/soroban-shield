@@ -31,6 +31,7 @@ jobs:
           cache-dependency-path: scripts/validate-sarif/package-lock.json
       - run: cargo build --workspace
       - run: scripts/check-sarif.sh
+      - run: scripts/check-json-report.sh
 
   website:
     runs-on: ubuntu-latest
