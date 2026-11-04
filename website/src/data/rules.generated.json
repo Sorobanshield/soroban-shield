@@ -31,7 +31,10 @@
       "tests/fixtures/negative/helper_auth",
       "tests/fixtures/positive/cross_file_write",
       "tests/fixtures/negative/cross_file_auth",
-      "tests/fixtures/edge/test_module_ignored"
+      "tests/fixtures/edge/test_module_ignored",
+      "tests/fixtures/positive/trait_impl_write",
+      "tests/fixtures/negative/trait_impl_auth",
+      "tests/fixtures/edge/trait_impl_not_contractimpl"
     ]
   },
   {
@@ -123,7 +126,8 @@
     ],
     "fixtures": [
       "tests/fixtures/positive/panicking_entrypoints",
-      "tests/fixtures/negative/typed_errors"
+      "tests/fixtures/negative/typed_errors",
+      "tests/fixtures/positive/trait_impl_unwrap"
     ]
   },
   {

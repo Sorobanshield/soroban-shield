@@ -61,6 +61,7 @@ impl Rule for ErrorPathReview {
             fixtures: vec![
                 "tests/fixtures/positive/panicking_entrypoints".into(),
                 "tests/fixtures/negative/typed_errors".into(),
+                "tests/fixtures/positive/trait_impl_unwrap".into(),
             ],
         }
     }

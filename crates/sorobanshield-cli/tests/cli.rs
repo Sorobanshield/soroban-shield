@@ -702,6 +702,63 @@ fn ss005_suggests_tests_project_wide() {
     assert_eq!(partial[0]["file"], "src/lib.rs");
 }
 
+fn findings_for_rule(rel: &str, rule: &str) -> Vec<serde_json::Value> {
+    findings_of(rel)
+        .into_iter()
+        .filter(|x| x["rule_id"] == rule)
+        .collect()
+}
+
+#[test]
+fn trait_impl_write_without_auth_is_reported() {
+    let o = scan("positive/trait_impl_write", &[]);
+    assert_eq!(code(&o), 1, "{}", out(&o));
+
+    let f = findings_for_rule("positive/trait_impl_write", "SS-001");
+    assert_eq!(f.len(), 1, "{f:?}");
+    assert_eq!(f[0]["file"], "src/lib.rs");
+    assert_eq!(f[0]["start_line"], 15);
+    let msg = f[0]["message"].as_str().unwrap();
+    assert!(msg.contains("`set_value`"), "{msg}");
+    assert!(!msg.contains("get_value"), "{msg}");
+}
+
+#[test]
+fn trait_impl_write_with_auth_is_clean() {
+    let o = scan("negative/trait_impl_auth", &[]);
+    assert_eq!(code(&o), 0, "{}", out(&o));
+    let f = findings_for_rule("negative/trait_impl_auth", "SS-001");
+    assert!(f.is_empty(), "{f:?}");
+}
+
+#[test]
+fn trait_impl_without_contractimpl_is_not_an_entrypoint() {
+    let o = scan("edge/trait_impl_not_contractimpl", &[]);
+    assert_eq!(code(&o), 0, "{}", out(&o));
+    let f = findings_for_rule("edge/trait_impl_not_contractimpl", "SS-001");
+    assert!(f.is_empty(), "{f:?}");
+}
+
+#[test]
+fn trait_impl_unwrap_is_reported_by_ss004() {
+    let f = findings_for_rule("positive/trait_impl_unwrap", "SS-004");
+    assert_eq!(f.len(), 1, "{f:?}");
+    assert_eq!(f[0]["severity"], "info");
+    assert_eq!(f[0]["start_line"], 14);
+    let msg = f[0]["message"].as_str().unwrap();
+    assert!(msg.contains("`read_config`"), "{msg}");
+    assert!(msg.contains("`.unwrap()`"), "{msg}");
+    assert_eq!(
+        code(&scan("positive/trait_impl_unwrap", &[])),
+        0,
+        "info stays below the default --fail-on low"
+    );
+    assert_eq!(
+        code(&scan("positive/trait_impl_unwrap", &["--fail-on", "info"])),
+        1
+    );
+}
+
 #[test]
 fn the_documented_sample_config_is_valid() {
     let cfg = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../examples/sample-config.toml");

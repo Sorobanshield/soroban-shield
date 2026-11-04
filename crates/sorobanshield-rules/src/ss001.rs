@@ -211,6 +211,9 @@ impl Rule for AuthorizationPathReview {
                 "tests/fixtures/positive/cross_file_write".into(),
                 "tests/fixtures/negative/cross_file_auth".into(),
                 "tests/fixtures/edge/test_module_ignored".into(),
+                "tests/fixtures/positive/trait_impl_write".into(),
+                "tests/fixtures/negative/trait_impl_auth".into(),
+                "tests/fixtures/edge/trait_impl_not_contractimpl".into(),
             ],
         }
     }
