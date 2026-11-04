@@ -1,0 +1,337 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/Sorobanshield/soroban-shield/blob/main/docs/report.schema.json",
+  "title": "SorobanShield JSON report v1",
+  "description": "Schema for sorobanshield scan --format json; extra fields are allowed for backwards-compatible extensions.",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "tool": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "const": "sorobanshield"
+        },
+        "version": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "version"
+      ],
+      "additionalProperties": true
+    },
+    "scan": {
+      "type": "object",
+      "properties": {
+        "root": {
+          "type": "string"
+        },
+        "files_scanned": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "projects": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "rules_run": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "config_file": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "exclude": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "disabled_rules": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "baseline_file": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "baseline_unmatched": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "errors": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "file": {
+                "type": "string"
+              },
+              "message": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "file",
+              "message"
+            ],
+            "additionalProperties": true
+          }
+        }
+      },
+      "required": [
+        "root",
+        "files_scanned",
+        "projects",
+        "rules_run",
+        "config_file",
+        "exclude",
+        "disabled_rules",
+        "baseline_file",
+        "baseline_unmatched",
+        "errors"
+      ],
+      "additionalProperties": true
+    },
+    "summary": {
+      "type": "object",
+      "properties": {
+        "total": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "suppressed_by_baseline": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "suppressed_by_comment": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "by_severity": {
+          "type": "object",
+          "properties": {
+            "info": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "low": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "medium": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "high": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "critical": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "info",
+            "low",
+            "medium",
+            "high",
+            "critical"
+          ],
+          "additionalProperties": true
+        }
+      },
+      "required": [
+        "total",
+        "suppressed_by_baseline",
+        "suppressed_by_comment",
+        "by_severity"
+      ],
+      "additionalProperties": true
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "rule_id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "severity": {
+            "enum": [
+              "info",
+              "low",
+              "medium",
+              "high",
+              "critical"
+            ]
+          },
+          "confidence": {
+            "enum": [
+              "low",
+              "medium",
+              "high"
+            ]
+          },
+          "message": {
+            "type": "string"
+          },
+          "file": {
+            "type": "string"
+          },
+          "start_line": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "end_line": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "remediation": {
+            "type": "string"
+          },
+          "references": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "limitations": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "rule_id",
+          "title",
+          "severity",
+          "confidence",
+          "message",
+          "file",
+          "start_line",
+          "end_line",
+          "remediation",
+          "references",
+          "limitations"
+        ],
+        "additionalProperties": true
+      }
+    },
+    "suppressions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "rule_id": {
+            "type": "string"
+          },
+          "file": {
+            "type": "string"
+          },
+          "line": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "rule_id",
+          "file",
+          "line",
+          "reason"
+        ],
+        "additionalProperties": true
+      }
+    },
+    "unused_suppressions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "rule_id": {
+            "type": "string"
+          },
+          "file": {
+            "type": "string"
+          },
+          "line": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "rule_id",
+          "file",
+          "line"
+        ],
+        "additionalProperties": true
+      }
+    },
+    "disclaimer": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "tool",
+    "scan",
+    "summary",
+    "findings",
+    "suppressions",
+    "unused_suppressions",
+    "disclaimer"
+  ],
+  "additionalProperties": true
+}
